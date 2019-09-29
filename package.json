@@ -1,8 +1,13 @@
 {
   "name": "alias-resolver",
   "displayName": "alias-resolver",
-  "description": "",
+  "description": "resolve import/require alias",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/serializedowen/vscode-alias-resolver.git"
+  },
   "version": "0.0.1",
+  "publisher": "owen-wang",
   "engines": {
     "vscode": "^1.38.0"
   },
@@ -20,12 +25,12 @@
   "contributes": {
     "commands": [
       {
-        "command": "extension.helloWorld",
-        "title": "Hello World"
+        "command": "extension.enable",
+        "title": "Enable alias resolver"
       },
       {
-        "command": "extension.testHook",
-        "title": "Test Alias"
+        "command": "extension.disable",
+        "title": "Disable alias resolver"
       }
     ]
   },
