@@ -1,5 +1,5 @@
 const mapping = {
-  "@/": vscode => vscode.workspace.rootPath + "/"
+  "@/": vscode => vscode.workspace.rootPath + "/src/"
 };
 
 const activatedLanguage = [
@@ -18,14 +18,16 @@ const vscode = require("vscode");
 const definitionProviderFactory = require("./definitionProvider");
 const completionItemProviderFactory = require("./completionProvider");
 
+let isActive = false;
+
 // this method is called when your extension is activated
 // your extension is activated the very first time the command is executed
 exports.activate = function(context) {
   // Use the console to output diagnostic information (console.log) and errors (console.error)
   // This line of code will only be executed once when your extension is activated
-  console.log(
-    'Congratulations, your extension "alias-resolver" is now active!'
-  );
+
+  const completionItemProvider = completionItemProviderFactory(mapping);
+  const definitionProvider = definitionProviderFactory(mapping);
 
   for (let key in mapping) {
     if (Object.prototype.toString.call(mapping[key]) === "[object Function]") {
@@ -33,38 +35,58 @@ exports.activate = function(context) {
     }
   }
 
-  const completionItemProvider = completionItemProviderFactory(mapping);
-  const definitionProvider = definitionProviderFactory(mapping);
-  // commands.push(
-  //   vscode.commands.registerCommand("extension.testHook", () => {
-  //     vscode.window.showInformationMessage("test!");
-  //   })
-  // );
-  const commands = [];
+  let commands = [];
+  const toggleOn = () => {
+    if (!isActive) {
+      commands.push(
+        vscode.languages.registerCompletionItemProvider(
+          activatedLanguage,
+          completionItemProvider,
+          ["/"]
+        )
+      );
+
+      commands.push(
+        vscode.languages.registerDefinitionProvider(
+          activatedLanguage,
+          definitionProvider
+        )
+      );
+
+      commands.map(command => context.subscriptions.push(command));
+
+      isActive = !isActive;
+    }
+  };
+
+  const toggleOff = () => {
+    if (isActive) {
+      commands.map(command => command.dispose());
+      commands = [];
+      isActive = !isActive;
+    }
+  };
+
+  vscode.window.showInformationMessage(mapping["@/"]);
+
   const hooks = [];
 
-  // hooks.push(
-  //   vscode.commands.registerCommand("extension.disable", () => {
-  //     commands.map(command => command());
-  //   })
-  // );
+  hooks.push(
+    vscode.commands.registerCommand("extension.toggle", () => {
+      // console.log("Turned " + isActive ? "off" : "on");
+
+      new Promise(resolve => {
+        isActive ? toggleOff() : toggleOn();
+        resolve();
+      }).then(
+        vscode.window.showInformationMessage(
+          `Alias resolver is turned ${isActive ? "on" : "off"}`
+        )
+      );
+    })
+  );
 
   // hooks.push("extension.enable", () => {});
-
-  commands.push(
-    vscode.languages.registerCompletionItemProvider(
-      activatedLanguage,
-      completionItemProvider,
-      ["/"]
-    )
-  );
-
-  commands.push(
-    vscode.languages.registerDefinitionProvider(
-      activatedLanguage,
-      definitionProvider
-    )
-  );
 
   // The command has been defined in the package.json file
   // Now provide the implementation of the command with registerCommand
@@ -77,8 +99,13 @@ exports.activate = function(context) {
     })
   );
 
-  commands.map(command => context.subscriptions.push(command));
   hooks.map(hook => context.subscriptions.push(hook));
+
+  toggleOn();
+
+  console.log(
+    'Congratulations, your extension "alias-resolver" is now active!'
+  );
 };
 
 // this method is called when your extension is deactivated

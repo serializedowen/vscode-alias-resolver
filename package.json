@@ -25,12 +25,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "extension.enable",
-        "title": "Enable alias resolver"
-      },
-      {
-        "command": "extension.disable",
-        "title": "Disable alias resolver"
+        "command": "extension.toggle",
+        "title": "Toggle on/off alias resolver"
       }
     ]
   },

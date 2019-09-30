@@ -19,7 +19,6 @@ module.exports = mapping => {
       return dirents
         .filter(dirent => dirent.name.startsWith(toComplete))
         .map(dirent => {
-          console.log(dirent);
           return new vscode.CompletionItem(
             dirent.isFile() ? dirent.name : dirent.name + "/",
             dirent.isFile()

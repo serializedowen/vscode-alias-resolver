@@ -11,7 +11,7 @@ const definitionProvider = mapping => {
       try {
         const path = parse(line, document.languageId);
         const newPath = searchReplace(mapping, path);
-        console.log(newPath);
+
         if (fs.existsSync(newPath)) {
           return new vscode.Location(
             vscode.Uri.file(newPath),
