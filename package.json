@@ -6,8 +6,8 @@
     "type": "git",
     "url": "git+https://github.com/serializedowen/vscode-alias-resolver.git"
   },
-  "version": "0.0.1",
-  "publisher": "owen-wang",
+  "version": "0.0.3",
+  "publisher": "serializedowen",
   "engines": {
     "vscode": "^1.38.0"
   },
@@ -31,7 +31,8 @@
     ]
   },
   "scripts": {
-    "test": "node ./test/runTest.js"
+    "test": "node ./test/runTest.js",
+    "build": "vsce package"
   },
   "devDependencies": {
     "@types/glob": "^7.1.1",
@@ -41,6 +42,7 @@
     "eslint": "^5.13.0",
     "glob": "^7.1.4",
     "mocha": "^6.1.4",
+    "vsce": "^1.66.0",
     "typescript": "^3.3.1",
     "vscode-test": "^1.2.0"
   },

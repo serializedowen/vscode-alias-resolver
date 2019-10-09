@@ -1,6 +1,4 @@
-const mapping = {
-  "@/": vscode => vscode.workspace.rootPath + "/src/"
-};
+const mapping = require("./settings");
 
 const activatedLanguage = [
   "javascript",

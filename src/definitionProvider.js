@@ -2,6 +2,7 @@ const parse = require("./babelParser");
 const vscode = require("vscode");
 const fs = require("fs");
 const searchReplace = require("./searchReplace");
+const extensions = require("./settings").extensions;
 
 const definitionProvider = mapping => {
   return {
@@ -12,7 +13,11 @@ const definitionProvider = mapping => {
         const path = parse(line, document.languageId);
         const newPath = searchReplace(mapping, path);
 
-        if (fs.existsSync(newPath)) {
+        const possibilities = [newPath].concat(
+          extensions.map(ext => newPath + ext)
+        );
+
+        if (possibilities.some(path => fs.existsSync(path))) {
           return new vscode.Location(
             vscode.Uri.file(newPath),
             new vscode.Position(0, 0)
